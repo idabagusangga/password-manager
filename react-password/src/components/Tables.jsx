@@ -1,50 +1,67 @@
 import React, { Component } from 'react';
-import { Table, Input, Button, Icon } from 'antd';
-import { GET_PASSWORDS } from '../store/actions/passwords'
+import { Table, Input, Button, Icon, Divider } from 'antd';
+import { GET_PASSWORDS, EDIT_PASSWORD_START, FILTER_PASSWORD } from '../store/actions/passwords'
 import {  connect } from 'react-redux'
 import {  bindActionCreators } from 'redux'
+import { Link } from 'react-router-dom' 
 //gotta import moment for created at / updated at
 
 
 
 
 class DataTable extends Component {
-  state = {
-  filterDropdownVisible: false,
-  data: this.props.data,
-  searchText: '',
-  filtered: false,
-};
+  constructor () {
+    super()
+    this.state = {
+    filterDropdownVisible: false,
+    // data: [],
+    searchText: '',
+    filtered: false,
+   };
+  }
 onInputChange = (e) => {
   this.setState({ searchText: e.target.value });
 }
 onSearch = () => {
   const { searchText } = this.state;
   const reg = new RegExp(searchText, 'gi');
+  console.log('masuk search');
   //disini mesti di dispatch untuk nyari pake regex (search) -------->
-  this.setState({
-    filterDropdownVisible: false,
-    filtered: !!searchText,
-    data: this.props.data.map((record) => {
-      const match = record.email.match(reg);
-      if (!match) {
-        return null;
-      }
-      return {
-        ...record,
-        email: (
-          <span>
-            {record.email.split(reg).map((text, i) => (
-              i > 0 ? [<span className="highlight">{match[0]}</span>, text] : text
-            ))}
-          </span>
-        ),
-      };
-    }).filter(record => !!record),
-  });
+  this.props.FILTER_PASSWORD(searchText)
+  // this.setState({
+  //   filterDropdownVisible: false,
+  //   filtered: !!searchText,
+  //   data: this.state.data.map((record) => {
+  //     const match = record.email.match(reg);
+  //     console.log(match);
+  //     if (!match) {
+  //       console.log('masuk sini');
+  //       return null;
+  //     }
+  //     return {
+  //       ...record,
+  //       email: (
+  //         <span>
+  //           {record.email.split(reg).map((text, i) => (
+  //             i > 0 ? [<span className="highlight">{match[0]}</span>, text] : text
+  //           ))}
+  //         </span>
+  //       ),
+  //     };
+  //   }).filter(record => !!record),
+  // });
 }
 fetchPasswords = () => {
   this.props.GET_PASSWORDS()
+}
+
+
+removeRecord = (record) => {
+  console.log(record);
+}
+
+startEditing = (record) => {
+  this.props.EDIT_PASSWORD_START()
 }
 
 componentWillMount () {
@@ -78,6 +95,7 @@ render() {
      title: 'Password',
      dataIndex: 'password',
      key: 'password',
+     render: (text,record) => ('****')
    }, {
      title: 'Website',
      dataIndex: 'website',
@@ -94,6 +112,14 @@ render() {
      title: 'Created At',
      dataIndex: 'createdAt',
      key: 'createdAt'
+   }, {
+     title: 'Actions',
+     key: 'action',
+     render: (text, record) => (
+        <span>
+          <Link to={`/edit/${record.email}`}><a onClick={(e)=>this.startEditing(record)}>Actions</a></Link>
+        </span>
+      )
    }];
    return <Table columns={columns} dataSource={this.props.data} />;
  }
@@ -101,12 +127,14 @@ render() {
 
 const mapStateToProps = (state) => {
   return {
-    data: state.passwordReducer
+    data: state.passwordReducer.data
   }
 }
 
 const mapDispatchToProps = dispatch => bindActionCreators ({
-  GET_PASSWORDS
+  GET_PASSWORDS,
+  EDIT_PASSWORD_START,
+  FILTER_PASSWORD
 },dispatch)
 
 

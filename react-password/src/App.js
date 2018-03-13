@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Route } from 'react-router-dom'
+import { BrowserRouter, Route, Link } from 'react-router-dom'
 import Home from './components/home'
+import Edit from './components/Edit'
 import logo from './logo.svg';
 import './App.css';
 import store from './store/index'
@@ -57,7 +58,11 @@ class App extends Component {
                 <img src={logo} className="App-logo" alt="logo" />
                 <h1 className="App-title">Welcome to React Password Manager</h1>
                 <BrowserRouter>
-                <Route exact path="/" component={Home}></Route>
+                <div>
+                  <Route exact path="/" component={Home}></Route>
+                  <Route path='/edit/:name' component={Edit}></Route>
+                </div>
+
                 </BrowserRouter>
               </div>
             </Content>

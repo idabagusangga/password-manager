@@ -119,89 +119,90 @@ class AddForm extends Component {
     const websiteOptions = autoCompleteResult.map(website => (
       <AutoCompleteOption key={website}>{website}</AutoCompleteOption>
     ));
-    if (this.props.dataStatus === 'pending') {
+    if (this.props.dataStatus.isLoading === true) {
       return (
         <Spinner></Spinner>
       )
-    }
-    return (
-      <Form onSubmit={this.handleSubmit}>
-        <FormItem
-          {...formItemLayout}
-          label="E-mail"
-        >
-          {getFieldDecorator('email', {
-            rules: [{
-              type: 'email', message: 'The input is not valid E-mail!',
-            }, {
-              required: true, message: 'Please input your E-mail!',
-            }],
-          })(
-            <Input />
-          )}
-        </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label="Password"
-        >
-          {getFieldDecorator('password', {
-            rules: [{
-              required: true, message: 'Please input your password!',
-            }, {
-              validator: this.validateToNextPassword,
-            }],
-          })(
-            <Input type="password" />
-          )}
-        </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label="Confirm Password"
-        >
-          {getFieldDecorator('confirm', {
-            rules: [{
-              required: true, message: 'Please confirm your password!',
-            }, {
-              validator: this.compareToFirstPassword,
-            }],
-          })(
-            <Input type="password" onBlur={this.handleConfirmBlur} />
-          )}
-        </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label="Website"
-        >
-          {getFieldDecorator('website', {
-            rules: [{ required: true, message: 'Please input website!' }],
-          })(
-            <AutoComplete
-              dataSource={websiteOptions}
-              onChange={this.handleWebsiteChange}
-              placeholder="website"
-            >
+    } else {
+      return (
+        <Form onSubmit={this.handleSubmit}>
+          <FormItem
+            {...formItemLayout}
+            label="E-mail"
+          >
+            {getFieldDecorator('email', {
+              rules: [{
+                type: 'email', message: 'The input is not valid E-mail!',
+              }, {
+                required: true, message: 'Please input your E-mail!',
+              }],
+            })(
               <Input />
-            </AutoComplete>
-          )}
-        </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label="PIN"
-          extra="This is used to retrieve, edit and delete your password later"
-        >
-          <Row gutter={8}>
-            <Col span={12}>
-              {getFieldDecorator('PIN', {
-                rules: [{ required: true, message: 'Please enter your PIN' }],
-              })(
-                <Input type="password" />
-              )}
-            </Col>
-          </Row>
-        </FormItem>
-         <Button type="primary" htmlType="submit">Register!!</Button>
-      </Form>
-    );
+            )}
+          </FormItem>
+          <FormItem
+            {...formItemLayout}
+            label="Password"
+          >
+            {getFieldDecorator('password', {
+              rules: [{
+                required: true, message: 'Please input your password!',
+              }, {
+                validator: this.validateToNextPassword,
+              }],
+            })(
+              <Input type="password" />
+            )}
+          </FormItem>
+          <FormItem
+            {...formItemLayout}
+            label="Confirm Password"
+          >
+            {getFieldDecorator('confirm', {
+              rules: [{
+                required: true, message: 'Please confirm your password!',
+              }, {
+                validator: this.compareToFirstPassword,
+              }],
+            })(
+              <Input type="password" onBlur={this.handleConfirmBlur} />
+            )}
+          </FormItem>
+          <FormItem
+            {...formItemLayout}
+            label="Website"
+          >
+            {getFieldDecorator('website', {
+              rules: [{ required: true, message: 'Please input website!' }],
+            })(
+              <AutoComplete
+                dataSource={websiteOptions}
+                onChange={this.handleWebsiteChange}
+                placeholder="website"
+              >
+                <Input />
+              </AutoComplete>
+            )}
+          </FormItem>
+          <FormItem
+            {...formItemLayout}
+            label="PIN"
+            extra="This is used to retrieve, edit and delete your password later"
+          >
+            <Row gutter={8}>
+              <Col span={12}>
+                {getFieldDecorator('PIN', {
+                  rules: [{ required: true, message: 'Please enter your PIN' }],
+                })(
+                  <Input type="password" />
+                )}
+              </Col>
+            </Row>
+          </FormItem>
+           <Button type="primary" htmlType="submit">{this.props.dataStatus.button}</Button>
+        </Form>
+      );  
+    }
   }
 }
 

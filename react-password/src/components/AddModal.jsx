@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Modal, Button } from 'antd';
 import AddForm from './AddForm'
+import {  connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 
 
 //modalState must be in redux
@@ -28,6 +30,7 @@ class AddModal extends Component {
          confirmLoading: false,
        });
      }, 2000);
+     // this.props.RESET_ADD_PASSWORD()
    }
    handleCancel = () => {
      console.log('Clicked cancel button');
@@ -53,4 +56,7 @@ class AddModal extends Component {
    }
   }
 
-export default AddModal;
+const mapDispatchToProps = dispatch => bindActionCreators ({
+},dispatch)
+
+export default connect(null,mapDispatchToProps)(AddModal);

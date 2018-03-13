@@ -4,7 +4,7 @@ export function GET_PASSWORDS () {
   return dispatch => {
     let arr = []
     dispatch(PENDING_GET_PASSWORD())
-    db.collection("password").get()
+    db.collection("passwords").get()
       .then((querySnapshot) => {
         querySnapshot.forEach(doc => {
           arr.push(doc.data())
@@ -35,15 +35,19 @@ export function ERROR_GET_PASSWORD () {
 }
 
 export function ADD_PASSWORD (value) {
+  let arr = []
   return dispatch => {
     dispatch(PENDING_ADD_PASSWORD())
-    db.collection("password").add(value)
-      .then(docRef => {
-        dispatch(SUCCESS_ADD_PASSWORD(docRef))
+    db.collection("passwords").doc(`${value.email}`).set(value)
+    .then(result => {
+      db.collection("passwords").get()
+      .then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+          arr.push(doc.data())
+        })
+        dispatch(SUCCESS_ADD_PASSWORD(arr))
       })
-      .catch(err => {
-        dispatch(FAILED_ADD_PASSWORD(err))
-      })
+    })
   }
 }
 
@@ -66,3 +70,50 @@ function SUCCESS_ADD_PASSWORD (payload) {
     payload: payload
   }
 }
+
+export function EDIT_PASSWORD_START () {
+  return {
+    type: 'EDIT_PASSWORD_START'
+  }
+}
+
+export function REMOVE_PASSWORDS (value) {
+  let arr = []
+  return dispatch => {
+    dispatch(PENDING_ADD_PASSWORD())
+    db.collection("passwords").doc(`${value}`).delete()
+    .then(result => {
+      db.collection("passwords").get()
+      .then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+          arr.push(doc.data())
+        })
+        dispatch(SUCCESS_ADD_PASSWORD(arr))
+      })
+    })
+  }
+}
+
+export function EDIT_PASSWORD (value) {
+  let arr = []
+  return dispatch => {
+    dispatch(PENDING_ADD_PASSWORD())
+    db.collection("passwords").doc(`${value.email}`).set(value)
+    .then(result => {
+      db.collection("passwords").get()
+      .then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+          arr.push(doc.data())
+        })
+        dispatch(SUCCESS_ADD_PASSWORD(arr))
+      })
+    })
+  }
+}
+
+export function FILTER_PASSWORD (search) {
+    return {
+      type: 'FILTER_PASSWORD',
+      payload: search  
+    }
+  }
