@@ -9,7 +9,26 @@ import Jumbotron from './components/carousel'
 import AddModal from './components/AddModal'
 import DataTable from './components/Tables'
 import AddForm from './components/AddForm'
-import { Carousel } from 'antd'
+import store from './store/index'
+import { Provider } from 'react-redux'
+import { Carousel, Layout } from 'antd'
+import { Form, 
+        Input, 
+        Tooltip, 
+        Icon, 
+        Cascader, 
+        Select, 
+        Row, 
+        Col, 
+        Checkbox, 
+        Button, 
+        AutoComplete } from 'antd';
+import renderer from 'react-test-renderer'
+const { Sider, Footer, Content } = Layout;
+import { BrowserRouter, Route, Link } from 'react-router-dom'
+
+
+//testing tambahain sama function testing
 
 Enzyme.configure({
   adapter: new Adapter()
@@ -37,14 +56,47 @@ describe ('<Carousel/>', () => {
   })
 })
 
-describe ('<AddForm/>', () => {
-  it()
+describe ('Store', () => {
+  const wrapperStore = mount(
+    <Provider store = { store }>
+      <Home></Home>
+    </Provider>
+  )
+  it('Should load initialState', () => {
+    expect(wrapperStore.props().store.getState().passwordReducer).toEqual({
+      data: [],
+      isLoading: false,
+      error: false,
+      button: 'Register'
+    })
+  })
 })
 
-// describe ('<AddForm/>', () => {
-//   it('should render every components in the component thanks', () => {
-//     const wrapper = shallow ((
-//       <AddForm></AddForm>
-//     ))
-//   })
-// })
+describe ('<AddForm/>', () => {
+  const wrapperApp = shallow (<AddForm/>, {context : {store} }).dive()
+  it('should render Form', () => {
+    expect(wrapperApp.find('Form')).toBeTruthy()
+  })
+  it('Should render Submit Button', () => {
+    expect(wrapperApp.find('Button')).toBeTruthy()
+  })
+  it('Should render FormItem', () => {
+    expect(wrapperApp.find('FormItem')).toBeTruthy()
+  })
+  it('Should warn if password does not contain Upper-case', () => {
+    wrapperApp.find('input').at(3).simulate('change', {
+      target: {
+        name: 'password',
+        value: 'aiue1233'
+      }
+    })
+    expect(wrapperApp.find('#ant-form-explain').at(0).text()).toMatch('Must contain at least 1 lower case alphabetical character')
+  })
+})
+
+describe('snapshot testing', () => {
+  it('rendered app must be the same as snapshot', () => {
+    let tree = renderer.create(<App/>)
+    expect(tree).toMatchSnapshot()
+  })
+})
