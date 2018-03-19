@@ -10,6 +10,7 @@ import AddModal from './components/AddModal'
 import DataTable from './components/Tables'
 import AddForm from './components/AddForm'
 import store from './store/index'
+import Spinner from './components/LoadingSpin'
 import { Provider } from 'react-redux'
 import { Carousel, Layout } from 'antd'
 import { Form, 
@@ -73,7 +74,7 @@ describe ('Store', () => {
 })
 
 describe ('<AddForm/>', () => {
-  const wrapperApp = shallow (<AddForm/>, {context : {store} }).dive()
+  const wrapperApp = shallow (<AddForm/>, {context: {store}}).dive().dive()
   it('should render Form', () => {
     expect(wrapperApp.find('Form')).toBeTruthy()
   })
@@ -84,19 +85,21 @@ describe ('<AddForm/>', () => {
     expect(wrapperApp.find('FormItem')).toBeTruthy()
   })
   it('Should warn if password does not contain Upper-case', () => {
-    wrapperApp.find('input').at(3).simulate('change', {
+    expect(wrapperApp.find('Input')).toHaveLength(5);
+    wrapperApp.find('Input').at(1).simulate('change', {
       target: {
         name: 'password',
         value: 'aiue1233'
       }
     })
-    expect(wrapperApp.find('#ant-form-explain').at(0).text()).toMatch('Must contain at least 1 lower case alphabetical character')
+    console.log(wrapperApp.find('Input').at(3).text());
+    expect(wrapperApp.find('.ant-form-explain').at(1).text()).toMatch('Must contain at least 1 lower case alphabetical character')
   })
 })
 
 describe('snapshot testing', () => {
   it('rendered app must be the same as snapshot', () => {
-    let tree = renderer.create(<App/>)
+    let tree = renderer.create(<Spinner/>)
     expect(tree).toMatchSnapshot()
   })
 })

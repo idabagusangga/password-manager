@@ -151,7 +151,7 @@ class AddForm extends Component {
                 validator: this.validateToNextPassword,
               }],
             })(
-              <Input type="password" />
+              <Input name="password" type="password" />
             )}
           </FormItem>
           <FormItem
